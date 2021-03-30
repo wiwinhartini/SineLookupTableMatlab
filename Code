@@ -1,0 +1,33 @@
+% This program outputs look-up tables for 6 sine PWM pairs for Arduino Due
+% Portland State University, March 2021
+% Dr. Gupta / Hartini
+
+clear all
+
+MasterFreq = 84*10^6; % Arduino Due Master Clock Freq in Hz
+pwmFreq = 15*10^3; % Desired pwm freq (user input)
+Prescaler = MasterFreq/pwmFreq; % To find number of samples per 1 sine wave
+fout = 60; % Ouput freq in Hz
+Tout = 1/fout; % Output period
+Tpwm = 1/pwmFreq; % PWM period
+samples = Tout/Tpwm; % Number of samples
+
+% Plot a sine wave 
+step = 2*pi/samples; 
+t  = 0:step:2*pi;
+y1 = (sin(t)); % Amplitude = -1 to 1
+length(y1)
+figure(1)
+plot(y1)
+grid on
+
+% Lookup table adjusted to 0 - Prescaler (5600) 
+LookUp = round(Prescaler/2 * y1 + Prescaler/2); % Lookup table rounded
+length(LookUp)
+figure(2)
+plot(LookUp)
+grid on
+
+% Print look-up table and copy to arduino due code 
+fprintf(' %d,', LookUp); % Values as a string
+
